@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lecture Lens · Learn & Quiz</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/" aria-label="Lecture Lens home"><span class="brand-icon">L</span> Lecture Lens</a><span class="top-note">YOUR PERSONAL STUDY SPACE</span></header>
+  <main class="page">
+    <section class="intro">
+      <p class="eyebrow">LEARN WITH INTENTION</p>
+      <h1>Make your lecture<br><em>stick.</em></h1>
+      <p class="subtitle">Turn your notes into clear takeaways and a quick knowledge check.</p>
+    </section>
+    <section class="workspace">
+      <form method="post" class="input-card">
+        <div class="card-heading"><span class="step">01</span><div><h2>Your lecture notes</h2><p>Paste a transcript, notes, or a short lesson below.</p></div></div>
+        <label class="sr-only" for="lecture">Lecture notes</label>
+        <textarea id="lecture" name="lecture" placeholder="Start with the ideas you want to remember…" required>{{ lecture }}</textarea>
+        <div class="form-foot"><span>Tip: include a few complete sentences for a better quiz.</span><button type="submit">Build my study guide <span aria-hidden="true">→</span></button></div>
+      </form>
+      {% if key_points or quiz %}
+      <section class="results" aria-live="polite">
+        <div class="results-head"><div><p class="eyebrow">YOUR STUDY GUIDE</p><h2>Take a moment to review.</h2></div><span class="ready">● READY</span></div>
+        {% if key_points %}<article class="result-card"><div class="card-heading"><span class="step">02</span><div><h3>Key takeaways</h3><p>The ideas that show up most in your lecture.</p></div></div><ul class="takeaways">{% for point in key_points %}<li><span>✳</span>{{ point }}</li>{% endfor %}</ul></article>{% endif %}
+        {% if quiz %}<article class="result-card"><div class="card-heading"><span class="step">03</span><div><h3>Quick knowledge check</h3><p>Choose the word that best completes each idea.</p></div></div><ol class="questions">{% for item in quiz %}{% set question_number = loop.index %}<li><p>{{ item.prompt }}</p><div class="options">{% for option in item.options %}<label><input type="radio" name="q{{ question_number }}" value="{{ option }}"><span>{{ option }}</span></label>{% endfor %}</div><details><summary>Reveal answer</summary><p class="answer">{{ item.answer }}</p></details></li>{% endfor %}</ol></article>{% endif %}
+        {% if not key_points and not quiz %}<p class="empty">Add a few complete sentences with specific ideas, then try again.</p>{% endif %}
+      </section>
+      {% else %}<aside class="hint"><span class="hint-mark">✳</span><p><strong>A good place to begin</strong><br>Paste your lecture notes to uncover the ideas worth remembering.</p><span class="hint-arrow">↗</span></aside>{% endif %}
+    </section>
+  </main>
+  <footer>Built for curious minds <span>✳</span></footer>
+</body>
+</html>
